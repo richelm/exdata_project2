@@ -21,7 +21,7 @@
 # Initializations
 # 
 # set working_dir variable
-working_dir <- "~/Documents/courses/exploratory_data_analysis/exdata_project2"
+working_dir <- "~/Documents/courses/exdata/exdata_project2"
 
 # set working directory
 setwd(working_dir)
@@ -40,6 +40,8 @@ baltimore <- filter(NEI, fips == "24510")
 # compute total annual emissions
 totalEmissions <- aggregate(Emissions ~ year + type, baltimore, sum)
 
+
+
 #
 # generate PNG plot
 #
@@ -49,15 +51,12 @@ png("plot3.png",
     height = 480)
 
 # generate the plot
-plot(totalEmissions$year,
-     totalEmissions$Emissions,
-     type = "b",
-     pch = 19,
-     col = "blue",
-     xlab = "Year",
-     ylim = c(1500,3500),
-     ylab = "Total PM2.5 Emissions (tons)",
-     main = "Total PM2.5 Emissions in Baltimore City, Maryland\nAnnually from 1999 to 2008")
+qplot(data=totalEmissions,
+      x = year,
+      y = Emissions,
+      color = type,
+      facets = ~type,
+      geom = "line")
 
 # close graphics device
 dev.off()
