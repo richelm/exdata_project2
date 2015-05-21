@@ -1,16 +1,17 @@
 # -------------------------------------------------------------------
-# FILE: plot1.R
+# FILE: plot2.R
 # Course: Exploratory Data Analysis
 # Project: 2
 #
-# R script to generate the first plot for the project.
+# R script to generate the second plot for the project.
 #
 # To run this script you will need to have the project data files 
 # Source_Classification_Code.rds and summarySCC_PM25.rds in your 
 # working directory and have your working directory set properly. 
 # Setting the working_dir variable should be the only change needed. 
-# The plot generated, plot1.png, too will be in the working directory.
+# The plot generated, plot2.png, too will be in the working directory.
 #
+# Required packages: dplyr
 #
 # -------------------------------------------------------------------
 # CHANGELOG:
@@ -25,35 +26,38 @@ working_dir <- "~/Documents/courses/exploratory_data_analysis/exdata_project2"
 # set working directory
 setwd(working_dir)
 
+# libraries
+library(dplyr)
+
 #
 # Read summarySCC_PM25 data file
 #
 NEI <- readRDS("summarySCC_PM25.rds")
 
+# filter out Baltimore City, Maryland (fips == "24510")
+baltimore <- filter(NEI, fips == "24510")
+
 # compute total annual emissions
-totalEmissions <- aggregate(Emissions ~ year, NEI, sum)
+totalEmissions <- aggregate(Emissions ~ year, baltimore, sum)
 
 #
 # generate PNG plot
 #
 # open graphics device
-png("plot1.png",
+png("plot2.png",
     width = 480,
     height = 480)
 
 # generate the plot
-# to avoid getting PM2.5 expressed in scientific notation,
-# divide by 1,000,000 and round to 1 digit
 plot(totalEmissions$year,
-     # express PM2.5 in millions of tons
-     round(totalEmissions$Emissions/1000000, digits = 1),
+     totalEmissions$Emissions,
      type = "b",
      pch = 19,
      col = "blue",
-     ylim = c(3.0,8.0),
      xlab = "Year",
-     ylab = "Total PM2.5 Emissions (millons of tons)",
-     main = "Total PM2.5 Emissions in United States\nAnnually from 1999 to 2008")
+     ylim = c(1500,3500),
+     ylab = "Total PM2.5 Emissions (tons)",
+     main = "Total PM2.5 Emissions in Baltimore City, Maryland\nAnnually from 1999 to 2008")
 
 # close graphics device
 dev.off()
