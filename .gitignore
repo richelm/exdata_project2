@@ -19,4 +19,6 @@ household_power_consumption.txt
 .Rhistory
 .RData
 *.rds
-
+scc.*
+*.txt
+*.csv

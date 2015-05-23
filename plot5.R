@@ -1,9 +1,9 @@
 # -------------------------------------------------------------------
-# FILE: plot3.R
+# FILE: plot5.R
 # Course: Exploratory Data Analysis
 # Project: 2
 #
-# R script to generate the third plot for the project.
+# R script to generate the fifth plot for the project.
 #
 # To run this script you will need to have the project data files
 # Source_Classification_Code.rds and summarySCC_PM25.rds in your
@@ -36,22 +36,22 @@ library(ggplot2)
 NEI <- readRDS("summarySCC_PM25.rds")
 
 # filter out Baltimore City, Maryland (fips == "24510")
-baltimore <- filter(NEI, fips == "24510")
+#   and motor vehicle sources (type == "ON-ROAD")
+baltimore <- NEI %>% 
+             filter(fips == "24510",type == "ON-ROAD")
 
 # compute total annual emissions
-totalEmissions <- aggregate(Emissions ~ year + type, baltimore, sum)
+totalEmissions <- aggregate(Emissions ~ year, baltimore, sum)
 
 #
 # generate PNG plot
 #
-plot3 <- qplot(data=totalEmissions,
-      x = year,
-      y = Emissions,
-      color = type,
-      facets = ~type,
-      geom = c("point","line"),
-      ylab = "Emissions (tons)",
-      main = "Emissions from the Four Types of Sources in Baltmore City, MD\nFor years 1999 to 2008")
+plot5 <- qplot(data=totalEmissions,
+               x = year,
+               y = Emissions,
+               geom = c("point","line"),
+               ylab = "Emissions (tons)",
+               main = "Motor Vehicle Emissions Baltmore City, MD\nFor years 1999 to 2008")
 
 # save it to file
-ggsave(plot3,file="plot3.png", width = 6.7, height = 6.7, dpi = 72)
+ggsave(plot5,file="plot5.png", width = 6.7, height = 6.7, dpi = 72)
