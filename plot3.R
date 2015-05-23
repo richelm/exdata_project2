@@ -41,9 +41,7 @@ baltimore <- filter(NEI, fips == "24510")
 # compute total annual emissions
 totalEmissions <- aggregate(Emissions ~ year + type, baltimore, sum)
 
-#
-# generate PNG plot
-#
+# generate the plot
 plot3 <- qplot(data=totalEmissions,
       x = year,
       y = Emissions,
