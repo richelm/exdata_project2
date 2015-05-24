@@ -9,7 +9,7 @@
 # Source_Classification_Code.rds and summarySCC_PM25.rds in your 
 # working directory and have your working directory set properly. 
 # Setting the working_dir variable should be the only change needed. 
-# The plot generated, plot2.png, too will be in the working directory.
+# The plot generated, plot4.png, too will be in the working directory.
 #
 # Required packages: dplyr and ggplot2
 #
@@ -40,6 +40,7 @@ NEI <- readRDS("summarySCC_PM25.rds")
 SCC <- readRDS("Source_Classification_Code.rds")
 
 # use EI.Sector column to determine coal combustion-related sources
+# any value with "Coal" in it is assumed coal related.
 SCC <- filter(SCC, grepl("Coal", EI.Sector))
 coal_scc <- unique(as.character(SCC$SCC))
 

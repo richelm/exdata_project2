@@ -9,9 +9,9 @@
 # Source_Classification_Code.rds and summarySCC_PM25.rds in your
 # working directory and have your working directory set properly.
 # Setting the working_dir variable should be the only change needed.
-# The plot generated, plot2.png, too will be in the working directory.
+# The plot generated, plot6.png, too will be in the working directory.
 #
-# Required packages: dplyr and ggplot2
+# Required packages: dplyr
 #
 # -------------------------------------------------------------------
 # CHANGELOG:
@@ -28,7 +28,6 @@ setwd(working_dir)
 
 # libraries
 library(dplyr)
-library(ggplot2)
 
 #
 # Read summarySCC_PM25 data file
@@ -36,33 +35,62 @@ library(ggplot2)
 NEI <- readRDS("summarySCC_PM25.rds")
 
 # filter out Baltimore City, Maryland (fips == "24510")
+#   and Los Angeles County, California (fips == "06037")
 #   and motor vehicle sources (type == "ON-ROAD")
-la_baltimore <- NEI %>% 
-  filter(fips %in% c("24510","06037"),type == "ON-ROAD")
-
-la_baltimore$fips <- gsub("06037","Los Angeles County, CA",la_baltimore$fips)
-la_baltimore$fips <- gsub("24510","Baltimore City, MD",la_baltimore$fips)
-colnames(la_baltimore)[1] <- "Location"
+baltimore <- NEI %>% filter(fips == "24510", type == "ON-ROAD")
+la_county <- NEI %>% filter(fips == "06037", type == "ON-ROAD")
 
 # compute total annual emissions
-totalEmissions <- aggregate(Emissions ~ year + Location, la_baltimore, sum)
-
-# LA data is approximately 10 time greater than Baltimore, so multiple every
-#  year of data by 10 to make better comparison 
-ind <- totalEmissions[,"Location"] == "Baltimore City, MD"
-totalEmissions[ind,"Emissions"] <- totalEmissions[ind,"Emissions"] * 10
+# for baltimore
+tae_baltimore  <- aggregate(Emissions ~ year, baltimore, sum)
+# for la county
+tae_la_county  <- aggregate(Emissions ~ year, la_county, sum)
 
 #
-# generate PNG plot
+# generate the plots for baltimore and la county each in a 
+# separate graph stacked vertically. add regression lines to
+# visually illustrate the amount of change for each.
 #
-plot6 <- qplot(data=totalEmissions,
-               x = year,
-               y = Emissions,
-               color = Location,
-               facets = ~Location,
-               geom = c("point","line"),
-               ylab = "Emissions (tons)",
-               main = "Motor Vehicle Emission in LA County and Baltimore\nFor years 1999 to 2008")
+# open PNG graphics device
+png("plot6.png",
+    width = 480,
+    height = 720)
 
-# save it to file
-ggsave(plot6,file="plot6.png", width = 6.7, height = 6.7, dpi = 72)
+# place plots vertically
+par(mfcol = c(2,1))
+
+# plot data for Baltimore City, MD
+x <- tae_baltimore$year
+y <- tae_baltimore$Emissions
+plot(x,y,
+     xlab = "Year",
+     ylab = "Emissions (tons)",
+     main = "Motor Vehicle Emissions for Baltimore, MD",
+     pch = 15,
+     col = "blue",
+     panel.first = grid()
+)
+# add regression line
+line.fit <- lm(y ~ x)
+summary(line.fit)
+abline(line.fit)
+
+# plot data for Los Angeles County, CA
+x <- tae_la_county$year
+y <- tae_la_county$Emissions
+
+plot(x,y,
+     xlab = "Year",
+     ylab = "Emissions (tons)",
+     main = "Motor Vehicle Emissions for Los Angeles County, CA",
+     pch = 15,
+     col = "blue",
+     panel.first = grid()
+)
+# add regression line
+line.fit <- lm(y ~ x)
+summary(line.fit)
+abline(line.fit)
+
+# close graphics device
+dev.off()

@@ -9,7 +9,7 @@
 # Source_Classification_Code.rds and summarySCC_PM25.rds in your
 # working directory and have your working directory set properly.
 # Setting the working_dir variable should be the only change needed.
-# The plot generated, plot2.png, too will be in the working directory.
+# The plot generated, plot5.png, too will be in the working directory.
 #
 # Required packages: dplyr and ggplot2
 #

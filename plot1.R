@@ -53,7 +53,9 @@ plot(totalEmissions$year,
      ylim = c(3.0,8.0),
      xlab = "Year",
      ylab = "Total PM2.5 Emissions (millons of tons)",
-     main = "Total PM2.5 Emissions in United States\nAnnually from 1999 to 2008")
+     main = "Total PM2.5 Emissions in United States\nAnnually from 1999 to 2008",
+     panel.first = grid()
+)
 
 # close graphics device
 dev.off()
